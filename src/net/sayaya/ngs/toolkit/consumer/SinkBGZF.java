@@ -17,7 +17,7 @@ import net.sayaya.ngs.toolkit.supplier.SourceBGZF;
 
 public class SinkBGZF implements Consumer<String> {
 	private final FileChannel cout;
-	private ByteBuffer buffer = ByteBuffer.allocate(65536).order(ByteOrder.LITTLE_ENDIAN);
+	private final ByteBuffer buffer = ByteBuffer.allocate(Compressor.BLOCK_SIZE).order(ByteOrder.LITTLE_ENDIAN);
 	public static SinkBGZF write(Path path) throws IOException {
 		return new SinkBGZF(path);
 	}
@@ -33,13 +33,14 @@ public class SinkBGZF implements Consumer<String> {
 			buffer.put(data, 0, idx);
 			buffer.rewind();
 			ChunkByte chunk = Compressor.process(new ChunkByte(buffer, buffer.remaining()));
+			
 			try {
 				cout.write(chunk.getData());
 			} catch(Exception e) {
 				throw new RuntimeException(e);
 			}
-			
-			buffer = ByteBuffer.allocate(65536).order(ByteOrder.LITTLE_ENDIAN).put(data, idx, data.length-idx);
+			buffer.clear();
+			buffer.put(data, idx, data.length-idx);
 		}
 	}
 	public synchronized SinkBGZF close() {

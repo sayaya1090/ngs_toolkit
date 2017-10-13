@@ -12,12 +12,12 @@ import net.sayaya.ngs.toolkit.data.ChunkCompressed;
 public class Decompressor implements Function<ChunkCompressed, ChunkByte> {
 	public static ChunkByte process(ChunkCompressed chunk) {
 		if(chunk == null || chunk.getData() == null) return null;
-		byte[] tmp = new byte[65536];
+		byte[] tmp = new byte[Compressor.BLOCK_SIZE];
 		Inflater inf	= new Inflater(true);
 		inf.setInput(chunk.getData().array(), 0, chunk.getRead());
 		int count = 0;
 		int total = 0;
-		ByteBuffer buffer = ByteBuffer.allocate(65536);
+		ByteBuffer buffer = ByteBuffer.allocate(Compressor.BLOCK_SIZE);
 		do try {
 			count = inf.inflate(tmp);
 			buffer.put(tmp, 0, count);

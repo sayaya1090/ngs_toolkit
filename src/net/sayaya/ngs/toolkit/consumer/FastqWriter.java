@@ -2,14 +2,17 @@ package net.sayaya.ngs.toolkit.consumer;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import net.sayaya.ngs.toolkit.data.Read;
 import net.sayaya.ngs.toolkit.supplier.FastqReader;
 import net.sayaya.ngs.toolkit.supplier.SourceBGZF;
 
-public class FastqWriter implements Consumer<Read> {
+public class FastqWriter implements Consumer<Read>, Function<Read, Stream<String>> {
 	private final SinkBGZF sink;
 	public FastqWriter(SinkBGZF sink) {
 		this.sink = sink;
@@ -26,6 +29,16 @@ public class FastqWriter implements Consumer<Read> {
 		sink.close();
 		return this;
 	}
+	
+	@Override
+	public Stream<String> apply(Read r) {
+		return toString(r);
+	}
+	
+	public static Stream<String> toString(Read r) {
+		return Stream.of(r.getHeader(), r.getRead(), "+", r.getQuality()!=null?r.getQuality():null).filter(Objects::nonNull);
+	}
+	
 	public final static void main(String[] args) {
 		try {
 			String source1 = "data1.fastq.gz";
@@ -38,7 +51,7 @@ public class FastqWriter implements Consumer<Read> {
 			AtomicLong cnt = new AtomicLong(0);
 			f.stream().peek(line->{
 				if(cnt.incrementAndGet() % 100000 == 0) System.out.println(line + "/" + cnt.get());
-			}).forEach(w);
+			}).map(FastqWriter::toString);
 			w.close();
 			System.out.println(cnt);
 			System.out.println(new Date().getTime() - time);

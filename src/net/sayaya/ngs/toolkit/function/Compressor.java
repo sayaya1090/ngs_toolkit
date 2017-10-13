@@ -12,7 +12,7 @@ import net.sayaya.ngs.toolkit.data.ChunkCompressed;
 public class Compressor implements Function<ChunkByte, ChunkCompressed> {
 	private final static byte[] header	= new byte[] {0x1F, (byte)0x8B, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0xFF, 0x06, 0x00, 0x42, 0x43, 0x02, 0x00};
 
-	static int BLOCK_SIZE = 65536;
+	public static int BLOCK_SIZE = 65536;
 	public static ChunkCompressed process(ChunkByte chunk) {
 		ByteBuffer buffer = chunk.getData();
 		if(buffer == null) return null;
