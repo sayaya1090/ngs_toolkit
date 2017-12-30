@@ -44,7 +44,7 @@ public class FastqWriter implements Consumer<Read>, Function<Read, Stream<String
 			String source1 = "data1.fastq.gz";
 			String dest = "data_1.fastq.gz";
 			SourceBGZF t = new SourceBGZF(new File(source1).toPath());
-			FastqReader f = new FastqReader(t);
+			FastqReader f = new FastqReader(t.get());
 			SinkBGZF d = SinkBGZF.write(new File(dest).toPath());
 			FastqWriter w = new FastqWriter(d);
 			long time = new Date().getTime();

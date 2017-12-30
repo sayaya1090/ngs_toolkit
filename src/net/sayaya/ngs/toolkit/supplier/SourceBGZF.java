@@ -36,7 +36,7 @@ public final class SourceBGZF implements Supplier<Stream<String>> {
 	private final static int xlen = 6;
 	private final int bufferSize;
 	
-	public SourceBGZF(Path path, int bufferSize) {
+	public SourceBGZF(int bufferSize, Path path) {
 		try {
 			cin = FileChannel.open(path, StandardOpenOption.READ);
 			size = cin.size();
@@ -46,7 +46,7 @@ public final class SourceBGZF implements Supplier<Stream<String>> {
 		this.bufferSize = bufferSize;
 	}
 	public SourceBGZF(Path path) {
-		this(path, 10000);
+		this(10000, path);
 	}
 	
 	private boolean hasNext() {
@@ -122,7 +122,7 @@ public final class SourceBGZF implements Supplier<Stream<String>> {
 			}
 		};
 		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false).limit(bufferSize)
-		.map(Decompressor::process)
+		.map(Decompressor::process).filter(chunk->chunk.getRead() > 0)
 		.map(this::toString).flatMap(Collection::stream).onClose(()->{
 			try {
 				cin.close();

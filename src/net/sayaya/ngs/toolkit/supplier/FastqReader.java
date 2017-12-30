@@ -15,8 +15,8 @@ import net.sayaya.ngs.toolkit.data.Read;
 
 public final class FastqReader implements Supplier<Stream<Read>> {
 	private final Stream<String> source;
-	public FastqReader(SourceBGZF source) {
-		this.source = source.stream().sequential();
+	public FastqReader(Stream<String> source) {
+		this.source = source.sequential();
 	}
 	
 	static Iterator<Read> toReadIterator(Iterator<String> source) {
@@ -35,7 +35,7 @@ public final class FastqReader implements Supplier<Stream<Read>> {
 				else return false;
 				if(source.hasNext()) {
 					lines[3] = source.next().trim();
-					if(lines[3].startsWith("@")) {
+					if(lines[3].startsWith("@") && (lines[3].length() != lines[1].length())) {
 						escapeFlag = lines[3];
 						lines[3] = null;
 					}
@@ -82,7 +82,7 @@ public final class FastqReader implements Supplier<Stream<Read>> {
 		try {
 			String source1 = "data1.fastq.gz";
 			SourceBGZF t = new SourceBGZF(new File(source1).toPath());
-			FastqReader f = new FastqReader(t);
+			FastqReader f = new FastqReader(t.get());
 			long time = new Date().getTime();
 			AtomicLong cnt = new AtomicLong(0);
 			f.stream().forEach(line->{

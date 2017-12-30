@@ -16,9 +16,9 @@ import net.sayaya.ngs.toolkit.data.Read;
 public final class FastqReaderPairwise implements Supplier<Stream<Pair<Read, Read>>> {
 	private final Stream<String> source1;
 	private final Stream<String> source2;
-	public FastqReaderPairwise(SourceBGZF source1, SourceBGZF source2) {
-		this.source1 = source1.stream().sequential();
-		this.source2 = source2.stream().sequential();
+	public FastqReaderPairwise(Stream<String> source1, Stream<String> source2) {
+		this.source1 = source1.sequential();
+		this.source2 = source2.sequential();
 	}
 	
 	@Override
@@ -49,7 +49,7 @@ public final class FastqReaderPairwise implements Supplier<Stream<Pair<Read, Rea
 			String source2 = "data2.fastq.gz";
 			SourceBGZF t1 = new SourceBGZF(new File(source1).toPath());
 			SourceBGZF t2 = new SourceBGZF(new File(source2).toPath());
-			FastqReaderPairwise f = new FastqReaderPairwise(t1, t2);
+			FastqReaderPairwise f = new FastqReaderPairwise(t1.get(), t2.get());
 			long time = new Date().getTime();
 			AtomicLong cnt = new AtomicLong(0);
 			f.stream().parallel().forEach(line->{
