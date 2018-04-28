@@ -18,7 +18,7 @@ public final class FastqReader implements Supplier<Stream<Read>> {
 	public FastqReader(Stream<String> source) {
 		this.source = source.sequential();
 	}
-	
+
 	static Iterator<Read> toReadIterator(Iterator<String> source) {
 		return new Iterator<Read>() {
 			private final LinkedList<Read> buffer = new LinkedList<Read>();
@@ -35,7 +35,7 @@ public final class FastqReader implements Supplier<Stream<Read>> {
 				else return false;
 				if(source.hasNext()) {
 					lines[3] = source.next().trim();
-					if(lines[3].startsWith("@") && (lines[3].length() != lines[1].length())) {
+					if(lines[3].startsWith("@") && lines[3].contains(":") && lines[3].contains(" ") && (lines[3].length() != lines[1].length())) {
 						escapeFlag = lines[3];
 						lines[3] = null;
 					}
@@ -53,7 +53,7 @@ public final class FastqReader implements Supplier<Stream<Read>> {
 				if(source.hasNext()) lines[1] = source.next().trim();
 				if(source.hasNext()) {
 					lines[2] = source.next().trim();
-					if(lines[2].startsWith("@")) {
+					if(lines[2].startsWith("@") && lines[2].contains(":") && lines[2].contains(" ") ) {
 						escapeFlag = lines[2];
 						lines[2] = null;
 					}
