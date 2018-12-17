@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicLong;
@@ -71,7 +72,9 @@ public final class FastqReader implements Supplier<Stream<Read>> {
 	@Override
 	public Stream<Read> get() {
 		Iterator<Read> iter = toReadIterator(FastqReader.this.source.iterator());
-		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false);
+		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false)
+		.filter(Objects::nonNull)
+		.filter(read->!read.isEmpty());
 	}
 
 	public Stream<Read> stream() {

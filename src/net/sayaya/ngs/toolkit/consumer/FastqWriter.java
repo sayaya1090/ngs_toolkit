@@ -48,12 +48,31 @@ public class FastqWriter implements Consumer<Read>, Function<Read, Stream<String
 			SinkBGZF d = SinkBGZF.write(new File(dest).toPath());
 			FastqWriter w = new FastqWriter(d);
 			long time = new Date().getTime();
-			AtomicLong cnt = new AtomicLong(0);
-			f.stream().peek(line->{
-				if(cnt.incrementAndGet() % 100000 == 0) System.out.println(line + "/" + cnt.get());
-			}).map(FastqWriter::toString);
+			AtomicLong totalRead = new AtomicLong(0);
+			AtomicLong totalBase = new AtomicLong(0);
+			AtomicLong totalGC = new AtomicLong(0);
+			AtomicLong totalN = new AtomicLong(0);
+			AtomicLong totalQ20 = new AtomicLong(0);
+			AtomicLong totalQ30 = new AtomicLong(0);
+			
+			f.stream().parallel()
+			.forEach(read->{
+				totalRead.incrementAndGet();
+				String read1 = read.getRead();
+				totalBase.addAndGet(read1.length());
+				totalGC.addAndGet(read1.chars().filter(ch->ch=='G' | ch=='C').count());
+				totalN.addAndGet(read1.chars().filter(ch->ch=='N').count());
+				totalQ20.addAndGet(read1.chars().filter(v->v>=53).count());
+				totalQ30.addAndGet(read1.chars().filter(v->v>=63).count());
+			})/*.forEach(w)*/;
+			
 			w.close();
-			System.out.println(cnt);
+			System.out.println(totalRead.get());
+			System.out.println(totalBase.get());
+			System.out.println(totalGC.get());
+			System.out.println(totalN.get());
+			System.out.println(totalQ20.get());
+			System.out.println(totalQ30.get());
 			System.out.println(new Date().getTime() - time);
 		} catch(Exception e) {
 			e.printStackTrace();

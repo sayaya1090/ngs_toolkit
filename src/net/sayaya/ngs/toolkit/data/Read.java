@@ -29,6 +29,9 @@ public class Read {
 		return qual;
 	}
 	
+	public boolean isEmpty() {
+		return read==null || read.length()<=0;
+	}
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[Read:")
