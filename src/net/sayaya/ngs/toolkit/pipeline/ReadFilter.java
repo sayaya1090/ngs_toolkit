@@ -2,7 +2,6 @@ package net.sayaya.ngs.toolkit.pipeline;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
 import net.sayaya.ngs.toolkit.supplier.FastqReader;
