@@ -22,14 +22,16 @@ public class ReadFilter {
 			.map(source->new FastqReader(source.get()))
 			.parallel()
 			.flatMap(FastqReader::get)
+			.parallel()
 			.forEach(read->{
 				totalRead.incrementAndGet();
 				String read1 = read.getRead();
+				String qual = read.getQuality();
 				totalBase.addAndGet(read1.length());
 				totalGC.addAndGet(read1.chars().filter(ch->ch=='G' | ch=='C').count());
 				totalN.addAndGet(read1.chars().filter(ch->ch=='N').count());
-				totalQ20.addAndGet(read1.chars().filter(v->v>=53).count());
-				totalQ30.addAndGet(read1.chars().filter(v->v>=63).count());
+				totalQ20.addAndGet(qual.chars().filter(v->v>=53).count());
+				totalQ30.addAndGet(qual.chars().filter(v->v>=63).count());
 			});
 			
 			System.out.println("Total Read:" + totalRead.get());
