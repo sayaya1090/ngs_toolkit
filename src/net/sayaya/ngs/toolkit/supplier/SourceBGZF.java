@@ -34,19 +34,14 @@ public final class SourceBGZF implements Supplier<Stream<String>> {
 	private final ByteBuffer crcBuffer		= ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN);
 	private final ByteBuffer isizeBuffer	= ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN);
 	private final static int xlen = 6;
-	private final int bufferSize;
 	
-	public SourceBGZF(int bufferSize, Path path) {
+	public SourceBGZF(Path path) {
 		try {
 			cin = FileChannel.open(path, StandardOpenOption.READ);
 			size = cin.size();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		this.bufferSize = bufferSize;
-	}
-	public SourceBGZF(Path path) {
-		this(10000, path);
 	}
 	
 	private boolean hasNext() {
@@ -121,7 +116,7 @@ public final class SourceBGZF implements Supplier<Stream<String>> {
 				return getChunk();
 			}
 		};
-		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false).limit(bufferSize)
+		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false)
 		.map(Decompressor::process).filter(chunk->chunk.getRead() > 0)
 		.map(this::toString).flatMap(Collection::stream).onClose(()->{
 			try {
