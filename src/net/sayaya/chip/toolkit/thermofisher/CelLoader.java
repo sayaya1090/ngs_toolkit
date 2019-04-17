@@ -36,7 +36,7 @@ public class CelLoader implements Supplier<Cel> {
 			System.out.println(data.getDataGroupNum());
 			read(cin, integerReader);
 			read(cin, integerReader);
-			ByteBuffer headerReader = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
+			ByteBuffer headerReader = ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN);
 			read(cin, headerReader);
 			String header = new String(headerReader.array(), StandardCharsets.US_ASCII);
 			System.out.println(header);
@@ -64,9 +64,5 @@ public class CelLoader implements Supplier<Cel> {
 	
 	public final static void main(String[] args) {
 		CelLoader instance = new CelLoader(new File("C:\\Users\\Sangjay\\Downloads\\19MA_0201 JEON JAE HO_(CytoScan750K_Array).CEL").toPath());
-	}
-
-	public static void main(String[] args) {
-		StandardCharsets;
 	}
 }
