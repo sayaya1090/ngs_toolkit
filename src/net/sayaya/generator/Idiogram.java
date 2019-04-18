@@ -1,6 +1,7 @@
 package net.sayaya.generator;
 
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -27,9 +28,12 @@ public class Idiogram {
 			for(int j = 0; j < cytobands.length; ++j) {
 				Cytoband cytoband = cytobands[j];
 				int height = (int) ((cytoband.getEnd() - cytoband.getStart()) / 400000);
-				g.setColor(toColor(cytoband.getGieStain()));
+				Color c1 = toColorFill(cytoband.getGieStain());
+				Color c2 = Color.WHITE;
+				GradientPaint gradient = new GradientPaint(posX-30, 0, c2, posX-10, 0, c1, true);
+				g.setPaint(gradient);
 				g.fillRect(posX, posY, 30, height);
-				g.setColor(new Color(0, 0, 0, (int)(256*0.25)));
+				g.setColor(toColorLine(cytoband.getGieStain()));
 				g.drawRect(posX, posY, 30, height);
 				posY += height;
 			}
@@ -37,7 +41,7 @@ public class Idiogram {
 		return g;
 	}
 	
-	private final static Color toColor(String gieStain) {
+	private final static Color toColorFill(String gieStain) {
 		switch(gieStain) {
 		case "gneg": return new Color(33, 67, 104, (int)(256*0.1));
 		case "gpos25": return new Color(33, 67, 104, (int)(256*0.25));
@@ -46,6 +50,20 @@ public class Idiogram {
 		case "gpos100": return new Color(33, 67, 104, (int)(256*0.9));
 		case "acen": 	return Color.WHITE;
 		case "gvar": 	return Color.LIGHT_GRAY;
+		case "stalk": 	return Color.DARK_GRAY;
+		default: return Color.WHITE;
+		}
+	}
+	
+	private final static Color toColorLine(String gieStain) {
+		switch(gieStain) {
+		case "gneg": return Color.DARK_GRAY;
+		case "gpos25": return Color.DARK_GRAY;
+		case "gpos50": return Color.DARK_GRAY;
+		case "gpos75": return Color.DARK_GRAY;
+		case "gpos100": return Color.DARK_GRAY;
+		case "acen":
+		case "gvar":
 		case "stalk": 	return Color.DARK_GRAY;
 		default: return Color.WHITE;
 		}
