@@ -216,7 +216,6 @@ public class Cychp {
 		private boolean hasSignalB = false;
 		public AlgorithmData(DataGroup data) {
 			DataSet[] dataset = data.getData();
-			Arrays.stream(dataset).forEach(k->System.out.println(k.getName()));
 			this.data = Arrays.stream(dataset).filter(d->"MarkerABSignal".equals(d.getName())).findAny().orElse(null);
 			assert data!=null;
 			signals = new MarkerABSignal[this.data.getRowNum()];
