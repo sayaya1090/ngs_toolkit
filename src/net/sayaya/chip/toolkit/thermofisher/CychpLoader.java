@@ -28,7 +28,7 @@ public class CychpLoader implements Supplier<Cychp> {
 	}
 	
 	public final static void main(String[] args) throws IOException {
-		CychpLoader instance = new CychpLoader(new File("C:\\Users\\sayay\\git\\ngs_toolkit\\19MA_0201 JEON JAE HO_(CytoScan750K_Array).cy750K.cychp").toPath());
+		CychpLoader instance = new CychpLoader(new File("C:\\Users\\Sangjay\\git\\ngs_toolkit\\20190715_161937_002_2.cyto.dxchp").toPath());
 		System.out.println(instance.get().getChr().getChromosome(22));
 		ProbeCopyNumberSet pcns = instance.get().getProbes().getProbeCopyNumber();
 		if(pcns!=null) for(int i = 0; i < 10; ++i) {
@@ -46,27 +46,27 @@ public class CychpLoader implements Supplier<Cychp> {
 		
 		CopyNumberSet cns = instance.get().getSegments().getCopyNumber();
 		if(cns!=null) for(int i = 0; i < cns.getCopyNumberCount(); ++i) {
-		//	System.out.println(cns.getCopyNumber(i));
+			System.out.println(cns.getCopyNumber(i));
 		}
 		
 		LohSet lohs = instance.get().getSegments().getLoh();
 		if(lohs!=null) for(int i = 0; i < lohs.getLohCount(); ++i) {
-		//	System.out.println(lohs.getLoh(i));
+			System.out.println(lohs.getLoh(i));
 		}
 		
 		CNNeutralLohSet lohs2 = instance.get().getSegments().getCNNeutralLoh();
 		if(lohs2!=null) for(int i = 0; i < lohs2.getCNNeutralLohCount(); ++i) {
-		//	System.out.println(lohs2.getCNNeutralLoh(i));
+			System.out.println(lohs2.getCNNeutralLoh(i));
 		}
 		
 		NormalDiploidSet diploid = instance.get().getSegments().getDiploid();
 		if(diploid!=null) for(int i = 0; i < diploid.getNormalDiploidCount(); ++i) {
-		//	System.out.println(diploid.getNormalDiploid(i));
+			System.out.println(diploid.getNormalDiploid(i));
 		}
 		
 		MosaicismSet mosaicism = instance.get().getSegments().getMosaicism();
 		if(mosaicism!=null) for(int i = 0; i < mosaicism.getMosaicismCount(); ++i) {
-		//	System.out.println(mosaicism.getMosaicism(i));
+			System.out.println(mosaicism.getMosaicism(i));
 		}
 		Genotyping gt = instance.get().getGenotyping();
 		if(gt!=null) for(int i = 0; i < gt.getGenotypeCount(); ++i) {

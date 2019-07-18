@@ -40,7 +40,7 @@ public class Chromosome implements Comparable<Chromosome> {
 		else return (byte)(Byte.parseByte(tmp)-1);
 	}
 	
-	public final static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		BufferedImage bi = new BufferedImage(1024, 768, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = bi.createGraphics();
 		g.setBackground(Color.WHITE);

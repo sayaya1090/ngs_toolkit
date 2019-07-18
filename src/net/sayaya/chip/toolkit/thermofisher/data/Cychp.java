@@ -272,6 +272,16 @@ public class Cychp {
 			mosaicism = Arrays.stream(dataset).filter(d->"Mosaicism".equals(d.getName())).findAny().map(MosaicismSet::new).orElse(null);
 		}
 	}
+
+	public interface Filterable {
+
+		int getMarkerCount();
+		long getStart();
+		long getStop();
+		default long getSize() {
+			return getStop() - getStart();
+		}
+	}
 	
 	@Data
 	@Accessors(chain = true)
@@ -298,7 +308,7 @@ public class Cychp {
 				.setChr(buffer.get())
 				.setStart(buffer.getInt())
 				.setStop(buffer.getInt())
-				.setMarker(buffer.getInt())
+				.setMarkerCount(buffer.getInt())
 				.setMarkerDistanceMean(buffer.getInt());
 				int state = (int)buffer.getFloat();
 				value.setState(CopyNumberState.values()[state]).setConfidence(buffer.getFloat());
@@ -306,16 +316,24 @@ public class Cychp {
 			}
 			return copynumbers[idx];
 		}
+		public CopyNumber[] getCopynumbers() {
+			for(int i = 0; i < getCopyNumberCount(); ++i) {
+				try {
+					getCopyNumber(i);
+				} catch(Exception e) {}
+			}
+			return copynumbers;
+		}
 	}
 	
 	@Data
 	@Accessors(chain = true)
-	public class CopyNumber {
+	public class CopyNumber implements Filterable {
 		private int id;
 		private byte chr;
 		private long start;
 		private long stop;
-		private int marker;
+		private int markerCount;
 		private int markerDistanceMean;
 		private CopyNumberState state;
 		private float confidence;
@@ -350,7 +368,7 @@ public class Cychp {
 				.setChr(buffer.get())
 				.setStart(buffer.getInt())
 				.setStop(buffer.getInt())
-				.setMarker(buffer.getInt())
+				.setMarkerCount(buffer.getInt())
 				.setMarkerDistanceMean(buffer.getInt());
 				if(buffer.get()==0)value.setLoh(Option.NOT_EXIST);
 				else value.setLoh(Option.EXIST);
@@ -363,12 +381,12 @@ public class Cychp {
 	
 	@Data
 	@Accessors(chain = true)
-	public class Loh {
+	public class Loh implements Filterable {
 		private int id;
 		private byte chr;
 		private long start;
 		private long stop;
-		private int marker;
+		private int markerCount;
 		private int markerDistanceMean;
 		private Option loh;
 		private float confidence;
@@ -403,7 +421,7 @@ public class Cychp {
 				.setChr(buffer.get())
 				.setStart(buffer.getInt())
 				.setStop(buffer.getInt())
-				.setMarker(buffer.getInt())
+				.setMarkerCount(buffer.getInt())
 				.setMarkerDistanceMean(buffer.getInt());
 				if(buffer.get()==0)value.setLoh(Option.NOT_EXIST);
 				else value.setLoh(Option.EXIST);
@@ -416,12 +434,12 @@ public class Cychp {
 	
 	@Data
 	@Accessors(chain = true)
-	public class CNNeutralLoh {
+	public class CNNeutralLoh implements Filterable {
 		private int id;
 		private byte chr;
 		private long start;
 		private long stop;
-		private int marker;
+		private int markerCount;
 		private int markerDistanceMean;
 		private Option loh;
 		private float confidence;
@@ -452,7 +470,7 @@ public class Cychp {
 				.setChr(buffer.get())
 				.setStart(buffer.getInt())
 				.setStop(buffer.getInt())
-				.setMarker(buffer.getInt())
+				.setMarkerCount(buffer.getInt())
 				.setMarkerDistanceMean(buffer.getInt());
 				if(buffer.get()==0)value.setDiploid(Option.NOT_EXIST);
 				else value.setDiploid(Option.EXIST);
@@ -465,12 +483,12 @@ public class Cychp {
 	
 	@Data
 	@Accessors(chain = true)
-	public class NormalDiploid {
+	public class NormalDiploid implements Filterable {
 		private int id;
 		private byte chr;
 		private long start;
 		private long stop;
-		private int marker;
+		private int markerCount;
 		private int markerDistanceMean;
 		private Option diploid;
 		private float confidence;
@@ -501,7 +519,7 @@ public class Cychp {
 				.setChr(buffer.get())
 				.setStart(buffer.getInt())
 				.setStop(buffer.getInt())
-				.setMarker(buffer.getInt())
+				.setMarkerCount(buffer.getInt())
 				.setMarkerDistanceMean(buffer.getInt());
 				if(buffer.get()==0)value.setMosaicism(Option.NOT_EXIST);
 				else value.setMosaicism(Option.EXIST);
@@ -516,12 +534,12 @@ public class Cychp {
 	
 	@Data
 	@Accessors(chain = true)
-	public class Mosaicism {
+	public class Mosaicism implements Filterable {
 		private int id;
 		private byte chr;
 		private long start;
 		private long stop;
-		private int marker;
+		private int markerCount;
 		private int markerDistanceMean;
 		private Option mosaicism;
 		private float confidence;
