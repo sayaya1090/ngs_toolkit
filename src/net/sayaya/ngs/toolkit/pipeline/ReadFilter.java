@@ -1,7 +1,11 @@
 package net.sayaya.ngs.toolkit.pipeline;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import net.sayaya.ngs.toolkit.supplier.FastqReader;
@@ -16,13 +20,20 @@ public class ReadFilter {
 			AtomicLong totalN = new AtomicLong(0);
 			AtomicLong totalQ20 = new AtomicLong(0);
 			AtomicLong totalQ30 = new AtomicLong(0);
-			
-			Arrays.stream(args)
-			.map(fileName->new SourceBGZF(new File(fileName.trim()).toPath()))
-			.map(source->new FastqReader(source.get()))
-			.parallel()
+			Arrays.stream(args).parallel()
+			.map(fileName->{
+				if(fileName.endsWith("gz")) return new SourceBGZF(new File(fileName.trim()).toPath()).get();
+				else {
+					try {
+						return Files.lines(new File(fileName.trim()).toPath());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
+			}).filter(Objects::nonNull)
+			.map(FastqReader::new)
 			.flatMap(FastqReader::get)
-			.parallel()
 			.forEach(read->{
 				totalRead.incrementAndGet();
 				String read1 = read.getRead();

@@ -29,6 +29,7 @@ public class CopyNumber {
 			if(ordinal > 22) ordinal = ordinal-1;
 			return ordinal;
 		}).distinct().collect(Collectors.toList());
+		if(hits.isEmpty()) return g;
 		Font font = Font.createFont(Font.TRUETYPE_FONT, new File("font/KaiGenGothicKR-Regular.ttf")).deriveFont(6.0f);
 		g.setFont(font);
 		for(int i: hits) {
